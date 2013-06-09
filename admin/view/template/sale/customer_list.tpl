@@ -22,11 +22,17 @@
           <thead>
             <tr>
               <td width="1" style="text-align: center;"><input type="checkbox" onclick="$('input[name*=\'selected\']').attr('checked', this.checked);" /></td>
-              <td class="left"><?php if ($sort == 'name') { ?>
+              <td class="left"><?php if ($sort == 'c.telephone') { ?>
+                <a href="<?php echo $sort_telephone; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_telephone; ?></a>
+                <?php } else { ?>
+                <a href="<?php echo $sort_telephone; ?>"><?php echo $column_telephone; ?></a>
+                <?php } ?></td>
+                
+			<td class="left"><?php if ($sort == 'name') { ?>
                 <a href="<?php echo $sort_name; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_name; ?></a>
                 <?php } else { ?>
                 <a href="<?php echo $sort_name; ?>"><?php echo $column_name; ?></a>
-                <?php } ?></td>
+                <?php } ?></td>              
               <td class="left"><?php if ($sort == 'c.email') { ?>
                 <a href="<?php echo $sort_email; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_email; ?></a>
                 <?php } else { ?>
@@ -64,6 +70,7 @@
           <tbody>
             <tr class="filter">
               <td></td>
+              <td><input type="text" name="filter_telephone" value="<?php echo $filter_telephone; ?>" /></td>
               <td><input type="text" name="filter_name" value="<?php echo $filter_name; ?>" /></td>
               <td><input type="text" name="filter_email" value="<?php echo $filter_email; ?>" /></td>
               <td><select name="filter_customer_group_id">
@@ -115,6 +122,8 @@
                 <?php } else { ?>
                 <input type="checkbox" name="selected[]" value="<?php echo $customer['customer_id']; ?>" />
                 <?php } ?></td>
+              
+              <td class="left"><?php echo $customer['telephone']; ?></td>  
               <td class="left"><?php echo $customer['name']; ?></td>
               <td class="left"><?php echo $customer['email']; ?></td>
               <td class="left"><?php echo $customer['customer_group']; ?></td>
