@@ -12,6 +12,10 @@ $_['text_add_blacklist']    = '添加到黑名单';
 $_['text_remove_blacklist'] = '从黑名单中删除';
 
 // Column
+$_['column_telephone']           = '电话号码';
+$_['column_balance']           = '余额';
+
+
 $_['column_name']           = '客户名称';
 $_['column_email']          = 'E-Mail';
 $_['column_customer_group'] = '用户组';
