@@ -65,12 +65,17 @@ class ModelSaleCustomer extends Model {
 	}
 			
 	public function getCustomers($data = array()) {
-		$sql = "SELECT *, CONCAT(c.firstname, ' ', c.lastname) AS name, cgd.name AS customer_group FROM " . DB_PREFIX . "customer c LEFT JOIN " . DB_PREFIX . "customer_group_description cgd ON (c.customer_group_id = cgd.customer_group_id) WHERE cgd.language_id = '" . (int)$this->config->get('config_language_id') . "'";
+		$sql = "SELECT * /*, CONCAT(c.firstname, ' ', c.lastname) AS name*/ , cgd.name AS customer_group FROM " . DB_PREFIX . "customer c LEFT JOIN " . DB_PREFIX . "customer_group_description cgd ON (c.customer_group_id = cgd.customer_group_id) WHERE cgd.language_id = '" . (int)$this->config->get('config_language_id') . "'";
 
 		$implode = array();
 		
+		//add by yangshengcheng@gmail.com
+		if (!empty($data['filter_telephone'])) {
+			$implode[] = "c.telephone LIKE '" . $data['filter_telephone'] . "%'";
+		}
+		
 		if (!empty($data['filter_name'])) {
-			$implode[] = "LCASE(CONCAT(c.firstname, ' ', c.lastname)) LIKE '" . $this->db->escape(utf8_strtolower($data['filter_name'])) . "%'";
+			$implode[] = "LCASE(c.nick_name) LIKE '" . $this->db->escape(utf8_strtolower($data['filter_name'])) . "%'";
 		}
 		
 		if (!empty($data['filter_email'])) {
