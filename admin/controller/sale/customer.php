@@ -267,6 +267,12 @@ class ControllerSaleCustomer extends Controller {
 	} 
     
   	private function getList() {
+  		if (isset($this->request->get['filter_telephone'])) {
+  			$filter_telephone = $this->request->get['filter_telephone'];
+  		} else {
+  			$filter_telephone = null;
+  		}
+  		
 		if (isset($this->request->get['filter_name'])) {
 			$filter_name = $this->request->get['filter_name'];
 		} else {
@@ -390,6 +396,7 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['customers'] = array();
 
 		$data = array(
+			'filter_telephone'		   =>$filter_telephone,	
 			'filter_name'              => $filter_name, 
 			'filter_email'             => $filter_email, 
 			'filter_customer_group_id' => $filter_customer_group_id, 
@@ -417,7 +424,8 @@ class ControllerSaleCustomer extends Controller {
 			
 			$this->data['customers'][] = array(
 				'customer_id'    => $result['customer_id'],
-				'name'           => $result['name'],
+				'telephone'		 => $result['telephone'],
+				'name'           => $result['nick_name'],
 				'email'          => $result['email'],
 				'customer_group' => $result['customer_group'],
 				'status'         => ($result['status'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled')),
@@ -439,6 +447,10 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['text_default'] = $this->language->get('text_default');		
 		$this->data['text_no_results'] = $this->language->get('text_no_results');
 
+		//yangshengcheng@gmail.com
+		$this->data['column_telephone'] = $this->language->get('column_telephone');
+		$this->data['column_balance'] = $this->language->get('column_balance');
+		
 		$this->data['column_name'] = $this->language->get('column_name');
 		$this->data['column_email'] = $this->language->get('column_email');
 		$this->data['column_customer_group'] = $this->language->get('column_customer_group');
@@ -510,6 +522,9 @@ class ControllerSaleCustomer extends Controller {
 			$url .= '&page=' . $this->request->get['page'];
 		}
 		
+		//add yangshengcheng@gmail.com
+		$this->data['sort_telephone'] = $this->url->link('sale/customer', 'token=' . $this->session->data['token'] . '&sort=telephone' . $url, 'SSL');
+		
 		$this->data['sort_name'] = $this->url->link('sale/customer', 'token=' . $this->session->data['token'] . '&sort=name' . $url, 'SSL');
 		$this->data['sort_email'] = $this->url->link('sale/customer', 'token=' . $this->session->data['token'] . '&sort=c.email' . $url, 'SSL');
 		$this->data['sort_customer_group'] = $this->url->link('sale/customer', 'token=' . $this->session->data['token'] . '&sort=customer_group' . $url, 'SSL');
@@ -565,6 +580,7 @@ class ControllerSaleCustomer extends Controller {
 			
 		$this->data['pagination'] = $pagination->render();
 
+		$this->data['filter_telephone'] = $filter_telephone;
 		$this->data['filter_name'] = $filter_name;
 		$this->data['filter_email'] = $filter_email;
 		$this->data['filter_customer_group_id'] = $filter_customer_group_id;
