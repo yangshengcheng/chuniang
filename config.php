@@ -30,25 +30,25 @@
 
 
 // HTTP
-define('HTTP_SERVER', 'http://mail.echuniang.com:8050/store/');
-define('HTTP_IMAGE', 'http://mail.echuniang.com:8050/store/image/');
-define('HTTP_ADMIN', 'http://mail.echuniang.com:8050/store/admin/');
+define('HTTP_SERVER', 'http://localhost/chuniang/');
+define('HTTP_IMAGE', 'http://localhost/chuniang/image/');
+define('HTTP_ADMIN', 'http://localhost/chuniang/admin/');
 
 // HTTPS
-define('HTTPS_SERVER', 'http://mail.echuniang.com:8050/store/');
-define('HTTPS_IMAGE', 'http://mail.echuniang.com:8050/store/image/');
+define('HTTPS_SERVER', 'http://localhost/chuniang/');
+define('HTTPS_IMAGE', 'http://localhost/chuniang/image/');
 
 // DIR
-define('DIR_APPLICATION', '/usr/local/apache/htdocs/store/catalog/');
-define('DIR_SYSTEM', '/usr/local/apache/htdocs/store/system/');
-define('DIR_DATABASE', '/usr/local/apache/htdocs/store/system/database/');
-define('DIR_LANGUAGE', '/usr/local/apache/htdocs/store/catalog/language/');
-define('DIR_TEMPLATE', '/usr/local/apache/htdocs/store/catalog/view/theme/');
-define('DIR_CONFIG', '/usr/local/apache/htdocs/store/system/config/');
-define('DIR_IMAGE', '/usr/local/apache/htdocs/store/image/');
-define('DIR_CACHE', '/usr/local/apache/htdocs/store/system/cache/');
-define('DIR_DOWNLOAD', '/usr/local/apache/htdocs/store/download/');
-define('DIR_LOGS', '/usr/local/apache/htdocs/store/system/logs/');
+define('DIR_APPLICATION', 'C:\AppServ\www\chuniang/catalog/');
+define('DIR_SYSTEM', 'C:\AppServ\www\chuniang/system/');
+define('DIR_DATABASE', 'C:\AppServ\www\chuniang/system/database/');
+define('DIR_LANGUAGE', 'C:\AppServ\www\chuniang/catalog/language/');
+define('DIR_TEMPLATE', 'C:\AppServ\www\chuniang/catalog/view/theme/');
+define('DIR_CONFIG', 'C:\AppServ\www\chuniang/system/config/');
+define('DIR_IMAGE', 'C:\AppServ\www\chuniang/image/');
+define('DIR_CACHE', 'C:\AppServ\www\chuniang/system/cache/');
+define('DIR_DOWNLOAD', 'C:\AppServ\www\chuniang/download/');
+define('DIR_LOGS', 'C:\AppServ\www\chuniang/system/logs/');
 
 // DB
 define('DB_DRIVER', 'mysql');

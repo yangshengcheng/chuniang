@@ -32,26 +32,26 @@
 // global var
 //define('G_ROOTUSER', '1');
 
-define('HTTP_SERVER', 'http://mail.echuniang.com:8050/store/admin/');
-define('HTTP_CATALOG', 'http://mail.echuniang.com:8050/store/');
-define('HTTP_IMAGE', 'http://mail.echuniang.com:8050/store/image/');
+define('HTTP_SERVER', 'http://localhost/chuniang/admin/');
+define('HTTP_CATALOG', 'http://localhost/chuniang/');
+define('HTTP_IMAGE', 'http://localhost/chuniang/image/');
 
 // HTTPS
-define('HTTPS_SERVER', 'http://mail.echuniang.com:8050/store/admin/');
-define('HTTPS_IMAGE', 'http://mail.echuniang.com:8050/store/image/');
+define('HTTPS_SERVER', 'http://localhost/chuniang/admin/');
+define('HTTPS_IMAGE', 'http://localhost/chuniang/image/');
 
 // DIR
-define('DIR_APPLICATION', '/usr/local/apache/htdocs/store/admin/');
-define('DIR_SYSTEM', '/usr/local/apache/htdocs/store/system/');
-define('DIR_DATABASE', '/usr/local/apache/htdocs/store/system/database/');
-define('DIR_LANGUAGE', '/usr/local/apache/htdocs/store/admin/language/');
-define('DIR_TEMPLATE', '/usr/local/apache/htdocs/store/admin/view/template/');
-define('DIR_CONFIG', '/usr/local/apache/htdocs/store/system/config/');
-define('DIR_IMAGE', '/usr/local/apache/htdocs/store/image/');
-define('DIR_CACHE', '/usr/local/apache/htdocs/store/system/cache/');
-define('DIR_DOWNLOAD', '/usr/local/apache/htdocs/store/download/');
-define('DIR_LOGS', '/usr/local/apache/htdocs/store/system/logs/');
-define('DIR_CATALOG', '/usr/local/apache/htdocs/store/catalog/');
+define('DIR_APPLICATION', 'C:\AppServ\www\chuniang/admin/');
+define('DIR_SYSTEM', 'C:\AppServ\www\chuniang/system/');
+define('DIR_DATABASE', 'C:\AppServ\www\chuniang/system/database/');
+define('DIR_LANGUAGE', 'C:\AppServ\www\chuniang/admin/language/');
+define('DIR_TEMPLATE', 'C:\AppServ\www\chuniang/admin/view/template/');
+define('DIR_CONFIG', 'C:\AppServ\www\chuniang/system/config/');
+define('DIR_IMAGE', 'C:\AppServ\www\chuniang/image/');
+define('DIR_CACHE', 'C:\AppServ\www\chuniang/system/cache/');
+define('DIR_DOWNLOAD', 'C:\AppServ\www\chuniang/download/');
+define('DIR_LOGS', 'C:\AppServ\www\chuniang/system/logs/');
+define('DIR_CATALOG', 'C:\AppServ\www\chuniang/catalog/');
 
 // DB
 define('DB_DRIVER', 'mysql');
