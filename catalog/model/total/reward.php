@@ -1,7 +1,21 @@
 <?php
 class ModelTotalReward extends Model {
-	public function getTotal(&$total_data, &$total, &$taxes) {
+	public function getTotal(&$total_data, &$total, &$taxes, $type=AllProduct) {		
+		
 		if (isset($this->session->data['reward'])) {
+			if (CommonProduct == $type)
+			{
+				$products = $this->cart->getCommonProducts();
+			}
+			else if (GroupProduct == $type)
+			{
+				$products = $this->cart->getGroupProducts();
+			}
+			else
+			{
+				$products = $this->cart->getProducts();
+			}			
+			
 			$this->load->language('total/reward');
 			
 			$points = $this->customer->getRewardPoints();
@@ -11,7 +25,7 @@ class ModelTotalReward extends Model {
 				
 				$points_total = 0;
 				
-				foreach ($this->cart->getProducts() as $product) {
+				foreach ($products as $product) {
 					if ($product['points']) {
 						$points_total += $product['points'];
 					}
@@ -19,7 +33,7 @@ class ModelTotalReward extends Model {
 				
 				$points = min($points, $points_total);
 		
-				foreach ($this->cart->getProducts() as $product) {
+				foreach ($products as $product) {
 					$discount = 0;
 					
 					if ($product['points']) {

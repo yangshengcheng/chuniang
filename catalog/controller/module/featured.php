@@ -16,6 +16,8 @@ class ControllerModuleFeatured extends Controller {
 		$this->data['products'] = array();
 
 		$products = explode(',', $this->config->get('featured_product'));
+		
+		
 
 		if (empty($setting['limit'])) {
 			$setting['limit'] = 5;
@@ -77,11 +79,16 @@ class ControllerModuleFeatured extends Controller {
 		
 		
 		$products = array_slice($products, 0, (int)$setting['limit']);
+		//$products = array_slice($products, 0, 100);
+		
+		//$this->log->write('[ControllerModuleFeatured]: $products.size '.sizeof($products));
 		
 		foreach ($products as $product_id) {
 			$product_info = $this->model_catalog_product->getProduct($product_id);
-			
+			//$this->log->write('[ControllerModuleFeatured]: $product_id ' . $product_id);
 			if ($product_info) {
+				
+				//$this->log->write('[ControllerModuleFeatured]: $product_id effect' . $product_id);
 				if ($product_info['image']) {
 					$image = $this->model_tool_image->resize($product_info['image'], $setting['image_width'], $setting['image_height']);
 				} else {
@@ -118,7 +125,10 @@ class ControllerModuleFeatured extends Controller {
 				);
 			}
 		}
-
+		
+		
+		//$this->log->write('[ControllerModuleFeatured]: $data.size ' . sizeof($this->data['products']));
+		
 		if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/module/featured.tpl')) {
 			$this->template = $this->config->get('config_template') . '/template/module/featured.tpl';
 		} else {

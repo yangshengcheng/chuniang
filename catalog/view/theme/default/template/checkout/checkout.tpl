@@ -5,10 +5,8 @@
     <?php echo $breadcrumb['separator']; ?><a href="<?php echo $breadcrumb['href']; ?>"><?php echo $breadcrumb['text']; ?></a>
     <?php } ?>
   </div>
-  <h1><?php echo $heading_title; ?></h1>
   <div class="checkout">
     <div id="checkout">
-      <div class="checkout-heading"><?php echo $text_checkout_option; ?></div>
       <div class="checkout-content"></div>
     </div>
     <?php if (!$logged) { ?>
@@ -18,21 +16,26 @@
     </div>
     <?php } else { ?>
     <div id="payment-address">
-      <div class="checkout-heading"><span><?php echo $text_checkout_payment_address; ?></span></div>
+      <h3><?php echo $text_address; ?></h3>
       <div class="checkout-content"></div>
     </div>
     <?php } ?>
+    
+    <div id="detail">
+      <div class="checkout-content"></div>
+    </div>   
+    
     <div id="payment-method">
-      <div class="checkout-heading"><?php echo $text_checkout_payment_method; ?></div>
       <div class="checkout-content"></div>
     </div>
+    
     <div id="confirm">
-      <div class="checkout-heading"><?php echo $text_checkout_confirm; ?></div>
       <div class="checkout-content"></div>
     </div>
   </div>
   <?php echo $content_bottom; ?></div>
 <script type="text/javascript"><!--
+//说明。本页面的动作全部由jquery触发。上面的div是占位以让相应的动作填值的。
 //注册账号 和 直接结账
 $('#checkout .checkout-content input[name=\'account\']').live('change', function() {
 	if ($(this).attr('value') == 'register') {
@@ -79,6 +82,16 @@ $(document).ready(function() {
 			alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
 		}
 	});
+	$.ajax({
+		url: 'index.php?route=checkout/detail',
+		dataType: 'html',
+		success: function(html) {
+			$('#detail .checkout-content').html(html);
+			
+			$('#detail .checkout-content').slideDown('slow');			
+		}
+	});
+	
 	$.ajax({
 		url: 'index.php?route=checkout/payment_method',
 		dataType: 'html',

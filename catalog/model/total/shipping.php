@@ -1,7 +1,20 @@
 <?php
 class ModelTotalShipping extends Model {
-	public function getTotal(&$total_data, &$total, &$taxes) {
-		if ($this->cart->hasShipping() && isset($this->session->data['shipping_method'])) {
+	public function getTotal(&$total_data, &$total, &$taxes, $type=AllProduct) {
+		if (CommonProduct == $type)
+		{
+			$products = $this->cart->getCommonProducts();
+		}
+		else if (GroupProduct == $type)
+		{
+			$products = $this->cart->getGroupProducts();
+		}
+		else
+		{
+			$products = $this->cart->getProducts();
+		}
+		
+		if ($this->cart->hasShippingWithProducts($products) && isset($this->session->data['shipping_method'])) {
 			$total_data[] = array( 
 				'code'       => 'shipping',
         		'title'      => $this->session->data['shipping_method']['title'],

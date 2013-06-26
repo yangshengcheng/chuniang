@@ -1,7 +1,22 @@
 <?php
 class ModelTotalHandling extends Model {
-	public function getTotal(&$total_data, &$total, &$taxes) {
-		if (($this->cart->getSubTotal() < $this->config->get('handling_total')) && ($this->cart->getSubTotal() > 0)) {
+	public function getTotal(&$total_data, &$total, &$taxes, $type=AllProduct) {		
+		if (CommonProduct == $type)
+		{
+			$products = $this->cart->getCommonProducts();
+		}
+		else if (GroupProduct == $type)
+		{
+			$products = $this->cart->getGroupProducts();
+		}
+		else
+		{
+			$products = $this->cart->getProducts();
+		}
+		
+		if (($this->cart->getSubTotalWithProducts($products) < $this->config->get('handling_total')) 
+		&& ($this->cart->getSubTotalWithProducts($products) > 0)) {
+						
 			$this->load->language('total/handling');
 		 	
 			$total_data[] = array( 

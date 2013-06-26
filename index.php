@@ -2,6 +2,11 @@
 // Version
 define('VERSION', '1.5.3.1');
 
+// const var
+define('AllProduct', '0');
+define('CommonProduct', '1');
+define('GroupProduct', '2');
+
 // Configuration
 require_once('config.php');
    

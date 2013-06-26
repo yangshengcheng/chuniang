@@ -46,6 +46,7 @@ define('DIR_LANGUAGE', 'C:\AppServ\www\chuniang/catalog/language/');
 define('DIR_TEMPLATE', 'C:\AppServ\www\chuniang/catalog/view/theme/');
 define('DIR_CONFIG', 'C:\AppServ\www\chuniang/system/config/');
 define('DIR_IMAGE', 'C:\AppServ\www\chuniang/image/');
+define('DIR_MOBILE_IMAGE', 'C:\AppServ\www\chuniang/image/');
 define('DIR_CACHE', 'C:\AppServ\www\chuniang/system/cache/');
 define('DIR_DOWNLOAD', 'C:\AppServ\www\chuniang/download/');
 define('DIR_LOGS', 'C:\AppServ\www\chuniang/system/logs/');

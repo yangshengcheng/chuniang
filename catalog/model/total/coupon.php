@@ -1,7 +1,22 @@
 <?php
 class ModelTotalCoupon extends Model {
-	public function getTotal(&$total_data, &$total, &$taxes) {
+	
+	public function getTotal(&$total_data, &$total, &$taxes, $type=AllProduct) {
+		
 		if (isset($this->session->data['coupon'])) {
+			if (CommonProduct == $type)
+			{
+				$products = $this->cart->getCommonProducts();
+			}
+			else if (GroupProduct == $type)
+			{
+				$products = $this->cart->getGroupProducts();
+			}
+			else
+			{
+				$products = $this->cart->getProducts();
+			}
+			
 			$this->load->language('total/coupon');
 			
 			$this->load->model('checkout/coupon');
@@ -12,11 +27,11 @@ class ModelTotalCoupon extends Model {
 				$discount_total = 0;
 				
 				if (!$coupon_info['product']) {
-					$sub_total = $this->cart->getSubTotal();
+					$sub_total = $this->cart->getSubTotalWithProducts($products);
 				} else {
 					$sub_total = 0;
 				
-					foreach ($this->cart->getProducts() as $product) {
+					foreach ($products as $product) {
 						if (in_array($product['product_id'], $coupon_info['product'])) {
 							$sub_total += $product['total'];
 						}
@@ -27,7 +42,7 @@ class ModelTotalCoupon extends Model {
 					$coupon_info['discount'] = min($coupon_info['discount'], $sub_total);
 				}
 				
-				foreach ($this->cart->getProducts() as $product) {
+				foreach ($products as $product) {
 					$discount = 0;
 					
 					if (!$coupon_info['product']) {

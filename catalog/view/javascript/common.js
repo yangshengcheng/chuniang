@@ -37,10 +37,10 @@ $(document).ready(function() {
 		});
 	});
 	
-	$('#menu  ').live('mouseover', function() {
-		$('#menu #cart').load('index.php?route=module/cart  #cart > *');		
+	$('#menu #cart-total').live('mouseover', function() {
+		$('#menu #carttable ').load('index.php?route=module/cart  #carttable > *');		
 	});
-	
+
 	
 	/* Mega Menu */
 	$('#menu ul > li > a + div').each(function(index, element) {

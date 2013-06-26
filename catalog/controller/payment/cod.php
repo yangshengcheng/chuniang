@@ -35,10 +35,30 @@ class ControllerPaymentCod extends Controller {
 			$json['redirect'] = $this->url->link('checkout/cart');
 		}	
 		
-		// Validate minimum quantity requirments.			
-		$products = $this->cart->getProducts();
-				
+		// 普通商品
+		$products = $this->cart->getCommonProducts();
+		// 团购商品			
+		$group_products = $this->cart->getGroupProducts();
+
+		// 普通商品 验证当前数量是否满足购买需求
 		foreach ($products as $product) {
+			$product_total = 0;
+				
+			foreach ($products as $product_2) {
+				if ($product_2['product_id'] == $product['product_id']) {
+					$product_total += $product_2['quantity'];
+				}
+			}		
+			
+			if ($product['minimum'] > $product_total) {
+				$json['redirect'] = $this->url->link('checkout/cart');
+				
+				break;
+			}				
+		}
+		
+		// 团购商品 验证当前数量是否满足购买需求
+		foreach ($group_products as $product) {
 			$product_total = 0;
 				
 			foreach ($products as $product_2) {
@@ -143,7 +163,7 @@ class ControllerPaymentCod extends Controller {
 				}
 			}	
 
-//免责
+//废弃：免责声明
 /*
 			if ($this->config->get('config_checkout_id')) {
 				$this->load->model('catalog/information');				
@@ -158,9 +178,14 @@ class ControllerPaymentCod extends Controller {
 				$this->session->data['comment'] = strip_tags($this->request->post['comment']);
 			}
 			
-			//购物车物资			
+			//普通商品价格总额			
 			$total_data = array();
 			$total = 0;
+			//团购商品价格总额
+			$grou_total_data =  array();
+			$grou_total = 0;
+			
+			
 			$taxes = $this->cart->getTaxes();
 			 
 			$this->load->model('setting/extension');			
@@ -186,6 +211,7 @@ class ControllerPaymentCod extends Controller {
 			}	
 			array_multisort($sort_order, SORT_ASC, $total_data);
 	
+			//普通商品 :准备填充到订单库的数据
 			$data = array();
 			
 			$data['invoice_prefix'] = $this->config->get('config_invoice_prefix');
@@ -212,6 +238,7 @@ class ControllerPaymentCod extends Controller {
 				$payment_address = $this->model_account_address->getAddress($this->session->data['payment_address_id']);
 			}
 /*
+ 			//废弃：游客直接下订单
 			elseif (isset($this->session->data['guest'])) {
 				$data['customer_id'] = 0;
 				$data['customer_group_id'] = $this->session->data['guest']['customer_group_id'];
@@ -254,9 +281,9 @@ class ControllerPaymentCod extends Controller {
 				$data['payment_code'] = '';
 			} 
 			
-			$product_data = array();
-		
-			foreach ($this->cart->getProducts() as $product) {
+			//普通商品:相关项			
+			$product_data = array();		
+			foreach ($products as $product) {
 				$option_data = array();
 	
 				foreach ($product['option'] as $option) {
@@ -292,6 +319,116 @@ class ControllerPaymentCod extends Controller {
 				); 
 			}
 			
+			//团购商品 :准备填充到订单库的数据
+			$data = array();
+			
+			$data['invoice_prefix'] = $this->config->get('config_invoice_prefix');
+			$data['store_id'] = $this->config->get('config_store_id');
+			$data['store_name'] = $this->config->get('config_name');
+			
+			if ($data['store_id']) {
+				$data['store_url'] = $this->config->get('config_url');		
+			} else {
+				$data['store_url'] = HTTP_SERVER;	
+			}
+			
+			if ($this->customer->isLogged()) {
+				$data['customer_id'] = $this->customer->getId();
+				$data['customer_group_id'] = $this->customer->getCustomerGroupId();
+				$data['firstname'] = $this->customer->getFirstName();
+				$data['lastname'] = $this->customer->getLastName();
+				$data['email'] = $this->customer->getEmail();
+				$data['telephone'] = $this->customer->getTelephone();
+				$data['fax'] = $this->customer->getFax();
+			
+				$this->load->model('account/address');
+				
+				$payment_address = $this->model_account_address->getAddress($this->session->data['payment_address_id']);
+			}
+/*
+ 			//废弃：游客直接下订单
+			elseif (isset($this->session->data['guest'])) {
+				$data['customer_id'] = 0;
+				$data['customer_group_id'] = $this->session->data['guest']['customer_group_id'];
+				$data['firstname'] = $this->session->data['guest']['firstname'];
+				$data['lastname'] = $this->session->data['guest']['lastname'];
+				$data['email'] = $this->session->data['guest']['email'];
+				$data['telephone'] = $this->session->data['guest']['telephone'];
+				$data['fax'] = $this->session->data['guest']['fax'];
+				
+				$payment_address = $this->session->data['guest']['payment'];
+			}
+*/			
+			$data['payment_firstname'] = $payment_address['firstname'];
+			$data['payment_lastname'] = $payment_address['lastname'];	
+			$data['payment_company'] = $payment_address['company'];	
+			$data['payment_company_id'] = $payment_address['company_id'];	
+			$data['payment_tax_id'] = $payment_address['tax_id'];	
+			$data['payment_address_1'] = $payment_address['address_1'];
+			$data['payment_address_2'] = $payment_address['address_2'];
+			$data['payment_city'] = $payment_address['city'];
+			$data['payment_postcode'] = $payment_address['postcode'];
+			$data['payment_zone'] = $payment_address['zone'];
+			$data['payment_zone_id'] = $payment_address['zone_id'];
+			$data['payment_country'] = $payment_address['country'];
+			$data['payment_country_id'] = $payment_address['country_id'];
+			$data['payment_address_format'] = $payment_address['address_format'];
+			
+			
+			$this->session->data['payment_method'] = $this->session->data['payment_methods'][$this->request->post['payment_method']];
+			
+			if (isset($this->session->data['payment_method']['title'])) {
+				$data['payment_method'] = $this->session->data['payment_method']['title'];
+			} else {
+				$data['payment_method'] = '';
+			}
+			
+			if (isset($this->session->data['payment_method']['code'])) {
+				$data['payment_code'] = $this->session->data['payment_method']['code'];
+			}else {
+				$data['payment_code'] = '';
+			}
+			
+			//团购商品:相关项
+			$group_products = $this->cart->getGroupProducts();
+			$group_product_data = array();
+			foreach ($group_products as $product) {
+				$option_data = array();
+	
+				foreach ($product['option'] as $option) {
+					if ($option['type'] != 'file') {
+						$value = $option['option_value'];	
+					} else {
+						$value = $this->encryption->decrypt($option['option_value']);
+					}	
+					
+					$option_data[] = array(
+						'product_option_id'       => $option['product_option_id'],
+						'product_option_value_id' => $option['product_option_value_id'],
+						'option_id'               => $option['option_id'],
+						'option_value_id'         => $option['option_value_id'],								   
+						'name'                    => $option['name'],
+						'value'                   => $value,
+						'type'                    => $option['type']
+					);					
+				}
+	 
+				$group_product_data[] = array(
+					'product_id' => $product['product_id'],
+					'name'       => $product['name'],
+					'model'      => $product['model'],
+					'option'     => $option_data,
+					'download'   => $product['download'],
+					'quantity'   => $product['quantity'],
+					'subtract'   => $product['subtract'],
+					'price'      => $product['price'],
+					'total'      => $product['total'],
+					'tax'        => $this->tax->getTax($product['price'], $product['tax_class_id']),
+					'reward'     => $product['reward']
+				); 
+			}
+			
+			
 			// Gift Voucher
 			$voucher_data = array();
 			
@@ -315,7 +452,6 @@ class ControllerPaymentCod extends Controller {
 			$data['vouchers'] = $voucher_data;
 			$data['totals'] = $total_data;
 			$data['comment'] = strip_tags($this->request->post['comment']);
-			//$data['comment'] = "testtest";
 			$data['total'] = $total;
 			
 			if (isset($this->request->cookie['tracking'])) {

@@ -16,6 +16,9 @@ $_['text_checkout_shipping_method']  = '第 4 步： 货运方式';
 $_['text_checkout_payment_method']   = '支付方式';
 //$_['text_checkout_confirm']          = '第 6 步： 确认订单';
 $_['text_checkout_confirm']          = '货物详情';
+$_['text_common_commodity']          = '普通商品明细';
+$_['text_tuan_commodity']          = '团购商品明细';
+$_['text_address']          = '确认收货地址';
 
 $_['text_new_customer']              = '新客户';
 $_['text_returning_customer']        = '注册用户';
@@ -37,6 +40,9 @@ $_['text_payment_method']            = '请选择一个支付方式。';
 $_['text_comments']                  = '添加订单备注';
 
 // Column
+$_['column_commodity']        = '商品订单详情';
+$_['column_common_commodity']        = '普通商品订单';
+$_['column_tuan_commodity']          = '团购商品订单';
 $_['column_name']                    = '品名';
 $_['column_model']                   = '型号';
 $_['column_quantity']                = '数量';

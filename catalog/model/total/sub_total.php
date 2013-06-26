@@ -1,9 +1,22 @@
 <?php
 class ModelTotalSubTotal extends Model {
-	public function getTotal(&$total_data, &$total, &$taxes) {
+	public function getTotal(&$total_data, &$total, &$taxes, $type=AllProduct) {
+		if (CommonProduct == $type)
+		{
+			$products = $this->cart->getCommonProducts();
+		}
+		else if (GroupProduct == $type)
+		{
+			$products = $this->cart->getGroupProducts();
+		}
+		else
+		{
+			$products = $this->cart->getProducts();
+		}
+		
 		$this->load->language('total/sub_total');
 		
-		$sub_total = $this->cart->getSubTotal();
+		$sub_total = $this->cart->getSubTotalWithProducts($products);		
 		
 		if (isset($this->session->data['vouchers']) && $this->session->data['vouchers']) {
 			foreach ($this->session->data['vouchers'] as $voucher) {

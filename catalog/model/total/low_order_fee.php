@@ -1,9 +1,23 @@
 <?php
 class ModelTotalLowOrderFee extends Model {
-	public function getTotal(&$total_data, &$total, &$taxes) {
-		if ($this->cart->getSubTotal() && ($this->cart->getSubTotal() < $this->config->get('low_order_fee_total'))) {
-			$this->load->language('total/low_order_fee');
-		 	
+	public function getTotal(&$total_data, &$total, &$taxes, $type=AllProduct) {		
+		if (CommonProduct == $type)
+		{
+			$products = $this->cart->getCommonProducts();
+		}
+		else if (GroupProduct == $type)
+		{
+			$products = $this->cart->getGroupProducts();
+		}
+		else
+		{
+			$products = $this->cart->getProducts();
+		}
+			
+		if ($this->cart->getSubTotalWithProducts($products) 
+		&& ($this->cart->getSubTotalWithProducts($products) < $this->config->get('low_order_fee_total'))) 
+		{
+			$this->load->language('total/low_order_fee');		 	
 			$total_data[] = array( 
 				'code'       => 'low_order_fee',
         		'title'      => $this->language->get('text_low_order_fee'),

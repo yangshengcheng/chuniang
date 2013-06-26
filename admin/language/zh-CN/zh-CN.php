@@ -104,6 +104,8 @@ $_['tab_total']               = '合计';
 $_['tab_transaction']         = '交易';
 $_['tab_voucher']             = '礼品券';
 $_['tab_voucher_history']     = '礼品券历史';
+$_['tab_group']               = '团购';
+$_['tab_mobile']               = '手机端设置';
 
 // Error
 $_['error_upload_1']          = '警告： 上传的文件超过了在php.ini指令中的上载文件大小上限！';
