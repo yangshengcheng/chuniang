@@ -72,6 +72,9 @@ class ControllerCatalogProduct extends Controller {
 		$this->load->model('catalog/product');
 	
     	if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
+			
+    		//$this->log->write('AdminControllerCatalogProduct: update()' .  $this->request->post['product_group']['book_times']);
+    		
 			$this->model_catalog_product->editProduct($this->request->get['product_id'], $this->request->post);
 			
 			$this->session->data['success'] = $this->language->get('text_success');
@@ -225,7 +228,7 @@ class ControllerCatalogProduct extends Controller {
   	}
 	
   	private function getList() {
-  		echo "1......";				
+  		//首页->商品管理			
 		if (isset($this->request->get['filter_name'])) {
 			$filter_name = $this->request->get['filter_name'];
 		} else {
@@ -519,7 +522,7 @@ class ControllerCatalogProduct extends Controller {
   	}
 
   	private function getForm() {
-  		echo "2....";
+  		//首页->商品管理->某具体商品
     	$this->data['heading_title'] = $this->language->get('heading_title');
  
     	$this->data['text_enabled'] = $this->language->get('text_enabled');
@@ -586,6 +589,8 @@ class ControllerCatalogProduct extends Controller {
 		$this->data['entry_customer_group'] = $this->language->get('entry_customer_group');
 		$this->data['entry_reward'] = $this->language->get('entry_reward');
 		$this->data['entry_layout'] = $this->language->get('entry_layout');
+		$this->data['entry_date_deliver'] = $this->language->get('entry_date_deliver');
+		$this->data['entry_book_times'] = $this->language->get('entry_book_times');
 				
     	$this->data['button_save'] = $this->language->get('button_save');
     	$this->data['button_cancel'] = $this->language->get('button_cancel');
@@ -607,6 +612,8 @@ class ControllerCatalogProduct extends Controller {
 		$this->data['tab_links'] = $this->language->get('tab_links');
 		$this->data['tab_reward'] = $this->language->get('tab_reward');
 		$this->data['tab_design'] = $this->language->get('tab_design');
+		$this->data['tab_group'] = $this->language->get('tab_group');
+		$this->data['tab_mobile'] = $this->language->get('tab_mobile');
 		 
  		if (isset($this->error['warning'])) {
 			$this->data['error_warning'] = $this->error['warning'];
@@ -1081,7 +1088,13 @@ class ControllerCatalogProduct extends Controller {
 		
 		$this->load->model('catalog/category');
 				
-		$this->data['categories'] = $this->model_catalog_category->getCategories(0);
+		//$this->data['categories'] = $this->model_catalog_category->getCategories(0);
+		$this->data['categories'] = $this->model_catalog_category->getCategories_store(0);
+		
+		//foreach ($this->data['categories'] as $category)
+		//{
+		//	$this->log->write('ControllerCatalogProduct: getForm()' . $category['category_id'] . '::' . $category['storename']);
+		//}
 		
 		if (isset($this->request->post['product_category'])) {
 			$this->data['product_category'] = $this->request->post['product_category'];
@@ -1138,7 +1151,38 @@ class ControllerCatalogProduct extends Controller {
 
 		$this->load->model('design/layout');
 		
-		$this->data['layouts'] = $this->model_design_layout->getLayouts();
+		$this->data['layouts'] = $this->model_design_layout->getLayouts();		
+		
+		//团购
+		$this->data['product_group'] = array();
+  		if (isset($this->request->get['product_id'])) {		
+			$this->data['product_group'] = $this->model_catalog_product->getProductGroup($this->request->get['product_id']);
+		}
+		
+		//手机端.照片
+  		if (isset($this->request->post['product_m_image'])) {
+			$product_m_images = $this->request->post['product_m_image'];
+		} elseif (isset($this->request->get['product_id'])) {
+			$product_m_images = $this->model_catalog_product->getMobileProductImages($this->request->get['product_id']);
+		} else {
+			$product_m_images = array();
+		}
+  		$this->data['product_m_images'] = array();
+		
+		foreach ($product_m_images as $product_m_image) {
+			if ($product_m_image['image'] && file_exists(DIR_MOBILE_IMAGE . $product_m_image['image'])) {
+				$image = $product_m_image['image'];
+			} else {
+				$image = 'no_image.jpg';
+			}
+			
+			$this->data['product_m_images'][] = array(
+				'image'      => $image,
+				'thumb'      => $this->model_tool_image->resize($image, 100, 100),
+				'sort_order' => $product_m_image['sort_order']
+			);
+		}
+				
 										
 		$this->template = 'catalog/product_form.tpl';
 		$this->children = array(
@@ -1160,9 +1204,9 @@ class ControllerCatalogProduct extends Controller {
       		}
     	}
 		
-    	if ((utf8_strlen($this->request->post['model']) < 1) || (utf8_strlen($this->request->post['model']) > 64)) {
-      		$this->error['model'] = $this->language->get('error_model');
-    	}
+    	//if ((utf8_strlen($this->request->post['model']) < 1) || (utf8_strlen($this->request->post['model']) > 64)) {
+      	//	$this->error['model'] = $this->language->get('error_model');
+    	//}
 		
 		if ($this->error && !isset($this->error['warning'])) {
 			$this->error['warning'] = $this->language->get('error_warning');

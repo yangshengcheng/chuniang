@@ -75,7 +75,7 @@ class ModelCatalogProduct extends Model {
 		
 		if (isset($data['product_category'])) {
 			foreach ($data['product_category'] as $category_id) {
-				$this->db->query("INSERT INTO " . DB_PREFIX . "product_to_category SET product_id = '" . (int)$product_id . "', category_id = '" . (int)$category_id . "'");
+				$this->db->query("INSERT IGNORE INTO " . DB_PREFIX . "product_to_category SET product_id = '" . (int)$product_id . "', category_id = '" . (int)$category_id . "'");
 			}
 		}
 		
@@ -211,7 +211,7 @@ class ModelCatalogProduct extends Model {
 		
 		if (isset($data['product_category'])) {
 			foreach ($data['product_category'] as $category_id) {
-				$this->db->query("INSERT INTO " . DB_PREFIX . "product_to_category SET product_id = '" . (int)$product_id . "', category_id = '" . (int)$category_id . "'");
+				$this->db->query("INSERT IGNORE INTO " . DB_PREFIX . "product_to_category SET product_id = '" . (int)$product_id . "', category_id = '" . (int)$category_id . "'");
 			}		
 		}
 
@@ -244,6 +244,19 @@ class ModelCatalogProduct extends Model {
 				}
 			}
 		}
+		
+		//团购
+		$this->db->query("DELETE FROM " . DB_PREFIX . "product_tuan WHERE product_id = '" . (int)$product_id . "'");
+
+		if (isset($data['product_group'])) {
+			$this->db->query("INSERT INTO " . DB_PREFIX . "product_tuan SET product_id = '" . (int)$product_id
+			. "', book_times = '" . (int)$data['product_group']['book_times'] 
+			. "', start_time = '" . $this->db->escape($data['product_group']['start_time']) 
+			. "', end_time = '" . $this->db->escape($data['product_group']['end_time'])
+			. "', deliver_time = '" . $this->db->escape($data['product_group']['deliver_time'])
+			. "'");
+		}
+		
 		
 		$this->db->query("DELETE FROM " . DB_PREFIX . "product_tag WHERE product_id = '" . (int)$product_id. "'");
 		
@@ -326,6 +339,15 @@ class ModelCatalogProduct extends Model {
 		return $query->row;
 	}
 	
+	//商品团购表
+	public function getProductGroup($product_id) {
+		//SELECT p.product_id, pd.name, pt.book_times, pt.start_time, pt.end_time, pt.deliver_time from product p LEFT JOIN product_description pd ON (p.product_id = pd.product_id) 
+		//LEFT JOIN product_tuan pt  ON (p.product_id = pt.product_id) WHERE p.product_id = '53' AND pd.language_id = '1"'
+		$query = $this->db->query("SELECT p.product_id, pd.name, pt.book_times, pt.start_time, pt.end_time, pt.deliver_time FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) LEFT JOIN " . DB_PREFIX . "product_tuan pt ON (p.product_id = pt.product_id) WHERE p.product_id = '" . (int)$product_id . "' AND pd.language_id = '" . (int)$this->config->get('config_language_id') . "'");
+				
+		return $query->row;
+	}
+	
 	public function getProducts($data = array()) {
 		if ($data) {
 			$sql = "SELECT * FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id)";
@@ -336,16 +358,17 @@ class ModelCatalogProduct extends Model {
 					
 			$sql .= " WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "'"; 
 			
+			//字符串匹配前面也加%号，增强匹配能力
 			if (!empty($data['filter_name'])) {
-				$sql .= " AND LCASE(pd.name) LIKE '" . $this->db->escape(utf8_strtolower($data['filter_name'])) . "%'";
+				$sql .= " AND LCASE(pd.name) LIKE '%" . $this->db->escape(utf8_strtolower($data['filter_name'])) . "%' ";
 			}
 
 			if (!empty($data['filter_model'])) {
-				$sql .= " AND LCASE(p.model) LIKE '" . $this->db->escape(utf8_strtolower($data['filter_model'])) . "%'";
+				$sql .= " AND LCASE(p.model) LIKE '%" . $this->db->escape(utf8_strtolower($data['filter_model'])) . "%'";
 			}
 			
 			if (!empty($data['filter_price'])) {
-				$sql .= " AND p.price LIKE '" . $this->db->escape($data['filter_price']) . "%'";
+				$sql .= " AND p.price LIKE '%" . $this->db->escape($data['filter_price']) . "%'";
 			}
 			
 			if (isset($data['filter_quantity']) && !is_null($data['filter_quantity'])) {
@@ -411,7 +434,8 @@ class ModelCatalogProduct extends Model {
 				$sql .= " LIMIT " . (int)$data['start'] . "," . (int)$data['limit'];
 			}	
 			
-			$query = $this->db->query($sql);
+			$query = $this->db->query($sql);			
+			//$this->log->write('[ModelCatalogProduct::getProducts]:  sql:' . $sql);
 		
 			return $query->rows;
 		} else {
@@ -529,6 +553,12 @@ class ModelCatalogProduct extends Model {
 	
 	public function getProductImages($product_id) {
 		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_image WHERE product_id = '" . (int)$product_id . "'");
+		
+		return $query->rows;
+	}
+	
+	public function getMobileProductImages($product_id) {
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_mobile_image WHERE product_id = '" . (int)$product_id . "'");
 		
 		return $query->rows;
 	}

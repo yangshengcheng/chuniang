@@ -122,6 +122,45 @@ class ModelCatalogCategory extends Model {
 		return $category_data;
 	}
 	
+	//获取分类(带分店名)--为了在商品管理的页面上添加商品所关联的店铺用。
+	public function getCategories_store($parent_id = 0) {
+		$category_data = $this->cache->get('category.' . (int)$this->config->get('config_language_id') . '.' . (int)$parent_id);
+	
+		if (!$category_data) {
+			$category_data = array();
+/*
+SELECT c.*, cd.*, s.name as storename FROM category c LEFT JOIN category_description cd ON (c.category_id = cd.category_id) 
+LEFT JOIN category_to_store  cs ON (c.category_id = cs.category_id)
+LEFT JOIN store  s ON (cs.store_id = s.store_id)
+ WHERE c.parent_id = '0' AND cd.language_id = '1' AND cs.store_id != 0 ORDER BY c.sort_order, cd.name ASC
+ */			
+			$query = $this->db->query("SELECT c.*, cd.*, s.name as storename FROM " . DB_PREFIX . "category c LEFT JOIN " . DB_PREFIX . "category_description cd ON (c.category_id = cd.category_id)"
+			."LEFT JOIN " . DB_PREFIX . "category_to_store  cs ON (c.category_id = cs.category_id) "
+			."LEFT JOIN " . DB_PREFIX . "store  s ON (cs.store_id = s.store_id) "
+			." WHERE c.parent_id = '" . (int)$parent_id . "' AND cd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND cs.store_id != 0 ORDER BY c.sort_order, cd.name ASC");
+			
+			//$query = $this->db->query($sql);
+		
+			foreach ($query->rows as $result) {
+				$category_data[] = array(
+					'category_id' => $result['category_id'],
+					'name'        => $this->getPath($result['category_id'], $this->config->get('config_language_id')),
+					'status'  	  => $result['status'],
+					'sort_order'  => $result['sort_order'],
+					'storename'   => $result['storename']
+				);
+			
+				$category_data = array_merge($category_data, $this->getCategories_store($result['category_id']));
+			}	
+	
+			$this->cache->set('category.' . (int)$this->config->get('config_language_id') . '.' . (int)$parent_id, $category_data);
+		}
+		
+		return $category_data;
+	}
+	
+
+	
 	public function getPath($category_id) {
 		$query = $this->db->query("SELECT name, parent_id FROM " . DB_PREFIX . "category c LEFT JOIN " . DB_PREFIX . "category_description cd ON (c.category_id = cd.category_id) WHERE c.category_id = '" . (int)$category_id . "' AND cd.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY c.sort_order, cd.name ASC");
 		
