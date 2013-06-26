@@ -14,7 +14,20 @@
       <div class="buttons"><a onclick="$('#form').submit();" class="button"><?php echo $button_save; ?></a><a onclick="location = '<?php echo $cancel; ?>';" class="button"><?php echo $button_cancel; ?></a></div>
     </div>
     <div class="content">
-      <div id="tabs" class="htabs"><a href="#tab-general"><?php echo $tab_general; ?></a><a href="#tab-data"><?php echo $tab_data; ?></a><a href="#tab-links"><?php echo $tab_links; ?></a><a href="#tab-attribute"><?php echo $tab_attribute; ?></a><a href="#tab-option"><?php echo $tab_option; ?></a><a href="#tab-discount"><?php echo $tab_discount; ?></a><a href="#tab-special"><?php echo $tab_special; ?></a><a href="#tab-image"><?php echo $tab_image; ?></a><a href="#tab-reward"><?php echo $tab_reward; ?></a><a href="#tab-design"><?php echo $tab_design; ?></a></div>
+      <div id="tabs" class="htabs">
+      	<a href="#tab-general"><?php echo $tab_general; ?></a>
+      	<a href="#tab-data"><?php echo $tab_data; ?></a>
+      	<a href="#tab-links"><?php echo $tab_links; ?></a>
+      	<a href="#tab-attribute"><?php echo $tab_attribute; ?></a>
+      	<a href="#tab-option"><?php echo $tab_option; ?></a>
+      	<a href="#tab-discount"><?php echo $tab_discount; ?></a>
+      	<a href="#tab-special"><?php echo $tab_special; ?></a>
+      	<a href="#tab-image"><?php echo $tab_image; ?></a>
+      	<a href="#tab-reward"><?php echo $tab_reward; ?></a>
+      	<a href="#tab-design"><?php echo $tab_design; ?></a>
+      	<a href="#tab-group"><?php echo $tab_group; ?></a>
+      	<a href="#tab-mobile"><?php echo $tab_mobile; ?></a>
+      </div>
       <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
         <div id="tab-general">
           <div id="languages" class="htabs">
@@ -55,7 +68,7 @@
         <div id="tab-data">
           <table class="form">
             <tr>
-              <td><span class="required">*</span> <?php echo $entry_model; ?></td>
+              <td><?php echo $entry_model; ?></td>
               <td><input type="text" name="model" value="<?php echo $model; ?>" />
                 <?php if ($error_model) { ?>
                 <span class="error"><?php echo $error_model; ?></span>
@@ -226,10 +239,10 @@
                   <div class="<?php echo $class; ?>">
                     <?php if (in_array($category['category_id'], $product_category)) { ?>
                     <input type="checkbox" name="product_category[]" value="<?php echo $category['category_id']; ?>" checked="checked" />
-                    <?php echo $category['name']; ?>
+                    <?php echo $category['storename'].'->'.$category['name']; ?>
                     <?php } else { ?>
                     <input type="checkbox" name="product_category[]" value="<?php echo $category['category_id']; ?>" />
-                    <?php echo $category['name']; ?>
+                    <?php echo $category['storename'].'->'.$category['name']; ?>
                     <?php } ?>
                   </div>
                   <?php } ?>
@@ -683,6 +696,58 @@
             <?php } ?>
           </table>
         </div>
+        <div id="tab-group">
+	        <table class="form">
+	            <tr>
+	              <td><?php echo $entry_book_times; ?></td>
+	              <td><input type="text" name="product_group[book_times]" value="<?php echo $product_group['book_times']; ?>"   size="12" /></td>
+	            </tr>
+	            <tr>
+	              <td><?php echo $entry_date_start; ?></td>
+	              <td><input type="text" name="product_group[start_time]" value="<?php echo $product_group['start_time']; ?>" size="12" class="date" /></td>
+	            </tr>
+	            <tr>
+	              <td><?php echo $entry_date_end; ?></td>
+	              <td><input type="text" name="product_group[end_time]" value="<?php echo $product_group['end_time']; ?>" size="12" class="date" /></td>
+	            </tr>
+	            <tr>
+	              <td><?php echo $entry_date_deliver; ?></td>
+	              <td><input type="text" name="product_group[deliver_time]" value="<?php echo $product_group['deliver_time']; ?>" size="12" class="date" /></td>
+	            </tr>
+	         </table>          
+        </div>
+        
+        <div id="tab-mobile">
+          <table id="m-images" class="list">
+            <thead>
+              <tr>
+                <td class="left"><?php echo $entry_image; ?></td>
+                <td class="right"><?php echo $entry_sort_order; ?></td>
+                <td></td>
+              </tr>
+            </thead>
+            <?php $m_image_row = 0; ?>
+            <?php foreach ($product_m_images as $product_m_image) { ?>
+            <tbody id="m-image-row<?php echo $m_image_row; ?>">
+              <tr>
+                <td class="left"><div class="image"><img src="<?php echo $product_m_image['thumb']; ?>" alt="" id="thumb<?php echo $m_image_row; ?>" />
+                    <input type="hidden" name="product_m_image[<?php echo $m_image_row; ?>][image]" value="<?php echo $product_m_image['image']; ?>" id="m_image<?php echo $m_image_row; ?>" />
+                    <br />
+                    <a onclick="image_upload('m_image<?php echo $m_image_row; ?>', 'thumb<?php echo $m_image_row; ?>');"><?php echo $text_browse; ?></a>&nbsp;&nbsp;|&nbsp;&nbsp;<a onclick="$('#thumb<?php echo $m_image_row; ?>').attr('src', '<?php echo $no_image; ?>'); $('#image<?php echo $m_image_row; ?>').attr('value', '');"><?php echo $text_clear; ?></a></div></td>
+                <td class="right"><input type="text" name="product_m_image[<?php echo $m_image_row; ?>][sort_order]" value="<?php echo $product_m_image['sort_order']; ?>" size="2" /></td>
+                <td class="left"><a onclick="$('#m-image-row<?php echo $m_image_row; ?>').remove();" class="button"><?php echo $button_remove; ?></a></td>
+              </tr>
+            </tbody>
+            <?php $m_image_row++; ?>
+            <?php } ?>
+            <tfoot>
+              <tr>
+                <td colspan="2"></td>
+                <td class="left"><a onclick="addMobileImage();" class="button"><?php echo $button_add_image; ?></a></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
       </form>
     </div>
   </div>
@@ -1082,6 +1147,23 @@ function addImage() {
 	$('#images tfoot').before(html);
 	
 	image_row++;
+}
+//--></script> 
+<script type="text/javascript"><!--
+var m_image_row = <?php echo $m_image_row; ?>;
+
+function addMobileImage() {
+    html  = '<tbody id="m-image-row' + m_image_row + '">';
+	html += '  <tr>';
+	html += '    <td class="left"><div class="image"><img src="<?php echo $no_image; ?>" alt="" id="thumb' + m_image_row + '" /><input type="hidden" name="product_m_image[' + m_image_row + '][image]" value="" id="image' + m_image_row + '" /><br /><a onclick="image_upload(\'image' + m_image_row + '\', \'thumb' + m_image_row + '\');"><?php echo $text_browse; ?></a>&nbsp;&nbsp;|&nbsp;&nbsp;<a onclick="$(\'#thumb' + m_image_row + '\').attr(\'src\', \'<?php echo $no_image; ?>\'); $(\'#image' + m_image_row + '\').attr(\'value\', \'\');"><?php echo $text_clear; ?></a></div></td>';
+	html += '    <td class="right"><input type="text" name="product_m_image[' + m_image_row + '][sort_order]" value="" size="2" /></td>';
+	html += '    <td class="left"><a onclick="$(\'#m-image-row' + m_image_row  + '\').remove();" class="button"><?php echo $button_remove; ?></a></td>';
+	html += '  </tr>';
+	html += '</tbody>';
+	
+	$('#m-images tfoot').before(html);
+	
+	m_image_row++;
 }
 //--></script> 
 <script type="text/javascript" src="view/javascript/jquery/ui/jquery-ui-timepicker-addon.js"></script> 
